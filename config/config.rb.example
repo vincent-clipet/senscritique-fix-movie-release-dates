@@ -1,0 +1,12 @@
+module Config
+
+	SKIP_FORM_UPLOAD = true
+
+	SC_COOKIES =
+	{
+		"SC_AUTH" => "",
+	}
+
+	LOG_LEVEL = Logger::INFO
+
+end
