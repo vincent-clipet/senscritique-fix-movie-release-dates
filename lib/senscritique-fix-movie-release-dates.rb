@@ -36,11 +36,13 @@ logger.formatter = proc {|severity, datetime, progname, msg| "[#{severity}] #{ms
 logger.level = Config::LOG_LEVEL
 logger.info("sc_url = #{sc_url}")
 
+user_agent = "senscritique-fix-movie-release-dates/1.0 (+https://github.com/vincent-clipet/senscritique-fix-movie-release-dates)"
+
 # Get current info on SC
 # ----------------------
 
 sc_wiki_url = SenscritiqueUtils.get_wiki_url(sc_url)
-sc_html = Nokogiri::HTML(HttpUtils.get(sc_wiki_url, Config::SC_COOKIES).to_s)
+sc_html = Nokogiri::HTML(HttpUtils.get(sc_wiki_url, Config::SC_COOKIES, user_agent).to_s)
 logger.debug("sc_wiki_url = #{sc_wiki_url}")
 
 sc_imdb_id = SenscritiqueUtils.get_wiki_imdb_id(sc_html)
@@ -58,7 +60,7 @@ exit 1 if sc_imdb_id.nil?
 # ------------------------------
 
 imdb_url = ImdbUtils.get_url(sc_imdb_id)
-imdb_html = Nokogiri::HTML(HttpUtils.get(imdb_url.to_s))
+imdb_html = Nokogiri::HTML(HttpUtils.get(imdb_url.to_s, {}, user_agent))
 logger.debug("imdb_url = #{imdb_url}")
 
 imdb_international_release_date, imdb_french_release_date = ImdbUtils.get_release_dates(imdb_html)
@@ -70,11 +72,12 @@ logger.info("imdb_french_release_date = #{imdb_french_release_date}")
 # Send new info to SC
 # -------------------
 
-# Skip form upload
-exit 0 if Config::SKIP_FORM_UPLOAD
+# Skip form upload, except for debug mode
+exit 0 if Config::SKIP_FORM_UPLOAD && logger.level != Logger::DEBUG
 	
 # Create Mechanize instance
 mech = Mechanize.new()
+mech.user_agent = user_agent
 
 # Add all needed cookies
 HttpUtils.add_sc_cookie(Config::SC_COOKIES, mech)
@@ -118,8 +121,8 @@ end
 
 logger.debug("wiki_form.inspect = #{wiki_form.inspect}")
 
-# Skip form upload when in debug mode
-exit 0 if logger.level == Logger::DEBUG
+# Skip form upload, even in debug mode
+exit 0 if Config::SKIP_FORM_UPLOAD
 
 # Submit form
 if need_submitting

@@ -34,7 +34,7 @@ module SenscritiqueUtils
 	# Get the form we need from the Mechanized page of movie's wiki page
 	# @param page [Object] Mechanized page
 	# @return [Mechanize::Form, nil]
-	def self.get_form_from_mechanize_page(page)
+	def self.get_form_from_mechanize_page(wiki_page)
 		wiki_page.forms.each do | iter_form |
 			# Select the form we want, skip others (search bar for example)
 			return iter_form if iter_form.action.match(/^\/wiki\//)

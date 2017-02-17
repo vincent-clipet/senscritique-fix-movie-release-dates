@@ -2,8 +2,8 @@ module HttpUtils
 
 
 
-	def self.get(url, cookies={})
-		response = RestClient.get(url, {:cookies => cookies})
+	def self.get(url, cookies={}, user_agent)
+		response = RestClient.get(url, {:cookies => cookies, :user_agent => user_agent})
 		return response
 	end
 
