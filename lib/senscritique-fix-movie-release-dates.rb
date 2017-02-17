@@ -77,12 +77,7 @@ exit 0 if Config::SKIP_FORM_UPLOAD
 mech = Mechanize.new()
 
 # Add all needed cookies
-Config::SC_COOKIES.each do | key, value |
-	cookie = Mechanize::Cookie.new(key, value)
-	cookie.domain = ".senscritique.com"
-	cookie.path = "/"
-	mech.cookie_jar.add(cookie)
-end
+HttpUtils.add_sc_cookie(Config::SC_COOKIES, mech)
 
 # Get page
 wiki_page = mech.get(sc_wiki_url)
@@ -93,14 +88,7 @@ mech.pre_connect_hooks << lambda do | mech2, request |
 end
 
 # Get form
-wiki_form = nil
-wiki_page.forms.each do | iter_form |
-	# Select the form we want, skip others (search bar for example)
-	if iter_form.action.match(/^\/wiki\//)
-		wiki_form = iter_form
-		break
-	end
-end
+wiki_form = SenscritiqueUtils.get_form_from_mechanize_page(wiki_page)
 
 exit 1 if wiki_form == nil
 

@@ -31,11 +31,15 @@ module SenscritiqueUtils
 
 
 
-	# Get day/month/year for Senscritique wiki form
-	# @param date [Date]
-	# @return [Array] containing the 3 values to input in wiki form
-	def self.split_date(date)
-		return [date.day, date.month, date.year]
+	# Get the form we need from the Mechanized page of movie's wiki page
+	# @param page [Object] Mechanized page
+	# @return [Mechanize::Form, nil]
+	def self.get_form_from_mechanize_page(page)
+		wiki_page.forms.each do | iter_form |
+			# Select the form we want, skip others (search bar for example)
+			return iter_form if iter_form.action.match(/^\/wiki\//)
+		end
+		return nil
 	end
 
 
