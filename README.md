@@ -1,6 +1,5 @@
 # senscritique-fix-movie-release-dates
-![travis-build-status](https://travis-ci.org/vincent-clipet/senscritique-fix-movie-release-dates.svg?branch=master)
-
+[![travis-build-status](https://travis-ci.org/vincent-clipet/senscritique-fix-movie-release-dates.svg?branch=master)](https://travis-ci.org/vincent-clipet/senscritique-fix-movie-release-dates)
 
 
 
@@ -37,6 +36,7 @@ Configuration
 
 
 
+
 Utilisation
 ===========
 
@@ -48,3 +48,12 @@ Exemple :
 ```
 ruby senscritique-fix-movie-release-dates.rb https://www.senscritique.com/film/Fight_Club/363185
 ```
+
+
+
+
+
+Améliorations
+=============
+
+* Ne plus utiliser *rest-client*, Mechanize pourrait directement gérer les HTTP GET initiaux vers les 2 sites
